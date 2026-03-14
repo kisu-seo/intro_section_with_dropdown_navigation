@@ -9,7 +9,8 @@
   <title>Snap – Make Remote Work</title>
 
   <!-- SEO: 페이지 설명 -->
-  <meta name="description" content="Get your team in sync, no matter your location. Streamline processes, create team rituals, and watch productivity soar." />
+  <meta name="description"
+    content="Get your team in sync, no matter your location. Streamline processes, create team rituals, and watch productivity soar." />
 
   <!-- 파비콘(브라우저 탭 아이콘) -->
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png" />
@@ -45,32 +46,16 @@
         <li class="nav__item nav__item--dropdown">
           <!-- aria-expanded: 스크린 리더에게 드롭다운 열림/닫힘 상태를 알려줌 -->
           <!-- aria-haspopup: 이 버튼이 팝업 메뉴를 가지고 있음을 알림 -->
-          <button
-            class="nav__btn"
-            id="btn-features"
-            aria-expanded="false"
-            aria-haspopup="true"
-            aria-controls="dropdown-features"
-          >
+          <button class="nav__btn" id="btn-features" aria-expanded="false" aria-haspopup="true"
+            aria-controls="dropdown-features">
             Features
             <!-- 화살표 아이콘: 드롭다운 열림 상태에 따라 회전 -->
-            <img
-              class="nav__arrow"
-              src="./images/icon-arrow-down.svg"
-              alt=""
-              aria-hidden="true"
-              width="10"
-              height="6"
-            />
+            <img class="nav__arrow" src="./images/icon-arrow-down.svg" alt="" aria-hidden="true" width="10"
+              height="6" />
           </button>
 
           <!-- Features 드롭다운 콘텐츠 -->
-          <ul
-            class="dropdown"
-            id="dropdown-features"
-            role="list"
-            aria-label="Features 하위 메뉴"
-          >
+          <ul class="dropdown" id="dropdown-features" role="list" aria-label="Features 하위 메뉴">
             <li class="dropdown__item">
               <a href="#" class="dropdown__link">
                 <img src="./images/icon-todo.svg" alt="" aria-hidden="true" class="dropdown__icon" />
@@ -100,31 +85,15 @@
 
         <!-- Company 메뉴 (드롭다운 있음) -->
         <li class="nav__item nav__item--dropdown">
-          <button
-            class="nav__btn"
-            id="btn-company"
-            aria-expanded="false"
-            aria-haspopup="true"
-            aria-controls="dropdown-company"
-          >
+          <button class="nav__btn" id="btn-company" aria-expanded="false" aria-haspopup="true"
+            aria-controls="dropdown-company">
             Company
-            <img
-              class="nav__arrow"
-              src="./images/icon-arrow-down.svg"
-              alt=""
-              aria-hidden="true"
-              width="10"
-              height="6"
-            />
+            <img class="nav__arrow" src="./images/icon-arrow-down.svg" alt="" aria-hidden="true" width="10"
+              height="6" />
           </button>
 
           <!-- Company 드롭다운 콘텐츠 (아이콘 없음) -->
-          <ul
-            class="dropdown dropdown--right"
-            id="dropdown-company"
-            role="list"
-            aria-label="Company 하위 메뉴"
-          >
+          <ul class="dropdown dropdown--right" id="dropdown-company" role="list" aria-label="Company 하위 메뉴">
             <li class="dropdown__item">
               <a href="#" class="dropdown__link">History</a>
             </li>
@@ -157,13 +126,8 @@
 
     <!-- 햄버거 버튼 (모바일에서만 보임) -->
     <!-- aria-label: 스크린 리더가 "메뉴 열기" 라고 읽어줌 -->
-    <button
-      class="header__hamburger"
-      id="btn-hamburger"
-      aria-label="메뉴 열기"
-      aria-expanded="false"
-      aria-controls="main-nav"
-    >
+    <button class="header__hamburger" id="btn-hamburger" aria-label="메뉴 열기" aria-expanded="false"
+      aria-controls="main-nav">
       <img src="./images/icon-menu.svg" alt="" aria-hidden="true" width="32" height="18" />
     </button>
   </header>
@@ -185,13 +149,7 @@
         <!-- srcset: 화면 크기에 따라 적절한 이미지를 자동 선택 -->
         <picture>
           <source media="(min-width: 1024px)" srcset="./images/image-hero-desktop.png" />
-          <img
-            src="./images/image-hero-mobile.png"
-            alt="노트북을 들고 있는 사람"
-            class="hero__image"
-            width="375"
-            height="300"
-          />
+          <img src="./images/image-hero-mobile.png" alt="노트북을 들고 있는 사람" class="hero__image" width="375" height="300" />
         </picture>
       </div>
 
@@ -219,17 +177,6 @@
       </div>
     </section>
   </main>
-
-  <!-- =====================================================
-       FOOTER: 출처 표기 (Frontend Mentor 챌린지 요구사항)
-       ===================================================== -->
-  <footer class="attribution" role="contentinfo">
-    Challenge by
-    <a href="https://www.frontendmentor.io?ref=challenge" target="_blank" rel="noopener noreferrer">
-      Frontend Mentor
-    </a>.
-    Coded by <a href="#">Your Name Here</a>.
-  </footer>
 
   <!-- 자바스크립트 연결 (body 맨 아래: HTML이 다 그려진 후 실행) -->
   <script src="./script.js"></script>
