@@ -207,6 +207,11 @@ body {
   /* 오버레이 위에 표시 */
 }
 
+/* 사이드바가 열려있을 때(aria-expanded="true") 햄버거 버튼 숨김 */
+.header__hamburger[aria-expanded="true"] {
+  display: none;
+}
+
 
 /* -------------------------------------------------------------------
    6. NAV (내비게이션) 컴포넌트 – 모바일: 사이드바
@@ -217,11 +222,18 @@ body {
   /* 화면에 고정 (스크롤해도 안 움직임) */
   top: 0;
   right: 0;
-  width: 240px;
-  /* 사이드바 너비 */
+  width: 65vw;
+  /* 사이드바 너비: 화면 너비의 65% (디자인 가이드 기준) */
+  min-width: 240px;
+  /* 최소 너비 240px 보장 */
   height: 100%;
   background-color: var(--color-white);
-  padding: var(--spacing-800) var(--spacing-300) var(--spacing-500);
+  /* 모바일 사이드바 배경색: 흰색(white) 적용 */
+  padding: var(--spacing-300) var(--spacing-300) var(--spacing-500);
+  /* 위쪽 패딩은 X 버튼 높이를 고려해 24px로 줄임 */
+
+  /* 내부 요소들의 절대 위치 기준점 설정 (X 버튼 배치를 위해 필요) */
+  position: fixed;
 
   /* Flexbox: 메뉴 목록과 로그인 버튼을 세로로 쌓기 */
   display: flex;
@@ -242,6 +254,18 @@ body {
   transform: translateX(0);
 }
 
+/* 사이드바 내부 X 닫기 버튼 (모바일 전용) */
+.nav__close {
+  display: flex; /* 모바일: 보임 */
+  align-self: flex-end;
+  /* 버튼을 오른쪽 끝에 배치 */
+  padding: var(--spacing-100);
+  /* 충분한 클릭 영역 확보 */
+  margin-bottom: var(--spacing-200);
+  /* 아래 메뉴 목록과의 간격 */
+  color: var(--color-gray-950);
+}
+
 /* 메뉴 목록: 세로로 나열 */
 .nav__list {
   display: flex;
@@ -260,8 +284,8 @@ body {
   align-items: center;
   gap: var(--spacing-100);
   color: var(--color-gray-500);
-  font-size: 16px;
-  /* Preset 5 Medium */
+  font-size: 18px;
+  /* 모바일 사이드바: Preset 4 Medium (18px) 적용 */
   font-weight: var(--font-weight-medium);
   transition: color var(--transition-base);
   width: 100%;
@@ -277,7 +301,8 @@ body {
 .nav__link {
   display: block;
   color: var(--color-gray-500);
-  font-size: 16px;
+  font-size: 18px;
+  /* 모바일 사이드바: Preset 4 Medium (18px) 적용 */
   font-weight: var(--font-weight-medium);
   transition: color var(--transition-base);
 }
@@ -299,12 +324,15 @@ body {
   transform: rotate(180deg);
 }
 
-/* 로그인/회원가입 영역: 세로 가운데 정렬 */
+/* 로그인/회원가입 영역: 세로 배치, 버튼 폭 꽉 채우기 */
 .nav__auth {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  /* 버튼들이 가로로 꽉 차도록 */
   gap: var(--spacing-200);
+  text-align: center;
+  /* Login 텍스트 가운데 정렬 */
 }
 
 
@@ -430,39 +458,78 @@ body {
   display: none;
 }
 
-/* 본문 설명 텍스트 */
+/* 본문 설명 텍스트: 디자인 가이드의 Preset 5 Medium 적용 */
 .hero__desc {
   font-size: 16px;
-  /* Preset 5 Medium */
+  /* 글자 크기 16px */
+  font-weight: var(--font-weight-medium);
+  /* 중간 굵기 (500) */
   line-height: 1.55;
+  /* 행간 155% */
+  letter-spacing: 0px;
+  /* 자간 0px (Preset 5 Medium 기준) */
   color: var(--color-gray-500);
+  /* 보조 텍스트 색상 */
   max-width: 340px;
+  /* 최대 너비 제한으로 가독성 확보 */
 }
 
-/* CTA 버튼 (Learn more) */
+/* CTA 버튼 (Learn more): 136x48px 고정 사이즈 및 Preset 5 Bold 적용 */
 .hero__cta {
-  margin-top: var(--spacing-100);
-  padding: 15px var(--spacing-300);
+  margin-top: 0;
+  /* 상단 여백 제거 */
+  width: 136px;
+  /* 고정 너비 136px */
+  height: 48px;
+  /* 고정 높이 48px */
+  display: inline-flex;
+  /* 내부 텍스트 중앙 정렬을 위해 플렉스 박스 유지 */
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  /* 고정 크기 적용을 위해 패딩 초기화 */
   font-size: 16px;
+  /* Preset 5 크기 */
+  font-weight: var(--font-weight-bold);
+  /* 굵게 (700) */
+  letter-spacing: -0.25px;
+  /* 자간 -0.25px */
 }
 
-/* 클라이언트 로고 행 */
+/* 클라이언트 로고 행: 가로 한 줄 정렬 유지 및 넘침(Overflow) 방지 */
 .hero__clients {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  /* 로고 사이 간격을 균등하게 배분 */
   gap: var(--spacing-300);
+  /* 로고 간 간격 24px (spacing-300 적용) */
   margin-top: var(--spacing-300);
-  flex-wrap: wrap;
-  /* 화면 작을 때 줄바꿈 허용 */
-  justify-content: center;
+  /* 위쪽 여백 24px (spacing-300 적용) 유지 */
+  padding-left: 2.92px;
+  /* 좌측 내부 여백 2.92px 적용 */
+  padding-right: 2.92px;
+  /* 우측 내부 여백 2.92px 적용 */
+  flex-wrap: nowrap;
+  /* 줄바꿈 없이 한 줄로 강제 정렬 */
+  width: 100%;
+  /* 부모 너비에 맞춰 꽉 채움 */
 }
 
+/* 개별 클라이언트 로고: 화면 너비에 맞춰 유연하게 축소되도록 설정 */
 .hero__client-logo {
-  height: 20px;
-  /* 로고 높이 통일, 너비는 자동 */
+  height: auto;
+  /* 가로세로 비율을 유지하며 줄어들도록 높이 자동 설정 */
+  max-height: 26px;
+  /* 원래 크기인 20px 이상 커지지 않게 제한 */
   width: auto;
-  /* 클라이언트 로고는 연한 gray로 표시 */
-  opacity: 0.6;
+  /* 비율 유지를 위해 너비 자동 */
+  max-width: calc(25% - 18px);
+  /* 로고 4개가 간격(gap 24px)을 포함하여 한 줄에 들어가도록 25%에서 간격 조절 */
+  flex-shrink: 1;
+  /* 공간 부족 시 로고 크기가 알아서 축소되도록 허용 */
+  object-fit: contain;
+  /* 이미지가 찌그러지지 않고 꽉 차게 비율 유지 */
 }
 
 
@@ -535,10 +602,17 @@ body {
   .nav__auth {
     flex-direction: row;
     align-items: center;
+    text-align: unset;
+    /* 모바일에서 설정한 가운데 정렬을 해제 */
     gap: var(--spacing-300);
   }
 
-  /* 버튼 글자 크기 조정 */
+  /* X 닫기 버튼: 데스크톱에서는 불필요하므로 숨김 */
+  .nav__close {
+    display: none;
+  }
+
+  /* 버튼 글자 크기: 데스크톱에서 14px로 축소 */
   .nav__btn {
     font-size: 14px;
   }

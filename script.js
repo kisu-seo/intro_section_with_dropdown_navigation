@@ -20,6 +20,9 @@ const mainNav = document.getElementById('main-nav');
 /** 오버레이: 모바일 메뉴 열렸을 때 배경 어둡게 만드는 <div> */
 const overlay = document.getElementById('overlay');
 
+/** 사이드바 내부 X 닫기 버튼: 모바일 사이드바 안에 있는 닫기 버튼 */
+const navCloseBtn = document.getElementById('btn-nav-close');
+
 /**
  * 드롭다운 버튼 목록 가져오기
  * querySelectorAll: 조건에 맞는 요소를 "모두" 가져옴 (배열처럼 사용)
@@ -175,6 +178,11 @@ hamburgerBtn.addEventListener('click', openSidebar);
 
 /* 오버레이 클릭: 사이드바 닫기 */
 overlay.addEventListener('click', closeSidebar);
+
+/* 사이드바 내부 X 버튼 클릭: 사이드바 닫기 */
+if (navCloseBtn) {
+  navCloseBtn.addEventListener('click', closeSidebar);
+}
 
 
 /* -------------------------------------------------------------------

@@ -39,7 +39,12 @@
     <!-- 메인 내비게이션 (데스크톱: 가로 배치 / 모바일: 사이드바) -->
     <nav class="nav" id="main-nav" aria-label="메인 내비게이션">
 
-      <!-- 왼쪽: 드롭다운 포함 메뉴 목록 -->
+      <!-- 사이드바 닫기 버튼 (모바일에서만 보임: X 아이콘) -->
+      <!-- aria-label: 스크린 리더에게 "메뉴 닫기" 라고 읽어줌 -->
+      <button class="nav__close" id="btn-nav-close" aria-label="메뉴 닫기">
+        <img src="./images/icon-close-menu.svg" alt="" aria-hidden="true" width="26" height="26" />
+      </button>
+
       <ul class="nav__list" role="list">
 
         <!-- Features 메뉴 (드롭다운 있음) -->
