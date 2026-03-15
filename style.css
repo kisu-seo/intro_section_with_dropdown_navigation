@@ -180,6 +180,17 @@ body {
 /* -------------------------------------------------------------------
    5. HEADER 컴포넌트
    ------------------------------------------------------------------- */
+/* ──────────────────────────────────────────────────────────────────
+   [핵심 원리] 쌓임 맥락(Stacking Context) 문제 해결
+   ──────────────────────────────────────────────────────────────────
+   문제: .header에 position: relative + z-index가 있으면 .header만의
+         독립적인 "방(쌓임 맥락)"이 생깁니다. 그 방 자체의 z-index(10)가
+         .overlay(30)보다 낮으니, 방 안의 .nav는 아무리 z-index가 50이어도
+         .overlay 아래로 깔리게 됩니다.
+   해결: .header에서 z-index를 제거하여 "방"을 없앱니다.
+         그러면 .nav(z-index: 50)가 전역 기준에서 .overlay(z-index: 30)
+         위로 올라옵니다.
+   ────────────────────────────────────────────────────────────────── */
 .header {
   /* Flexbox: 로고와 내비게이션을 가로로 나란히 배치 */
   display: flex;
@@ -187,9 +198,8 @@ body {
   /* 로고(좌), 햄버거(우) – 양 끝으로 밀어냄 */
   justify-content: space-between;
   padding: var(--spacing-200) var(--spacing-200) var(--spacing-300) var(--spacing-200);
-  position: relative;
-  /* z-index를 쓰기 위한 기준점 설정 */
-  z-index: 10;
+  /* position과 z-index를 제거하여 쌓임 맥락(Stacking Context) 해제 */
+  /* .nav가 전역 기준으로 .overlay보다 위에 올 수 있게 됨 */
 }
 
 /* 로고 이미지 */
@@ -203,13 +213,20 @@ body {
 .header__hamburger {
   /* 클릭 영역을 충분히 확보 (접근성 권고: 44×44px 이상) */
   padding: 8.5px 0;
+  position: relative;
+  /* z-index가 작동하려면 position이 필요 (static 제외) */
   z-index: 100;
-  /* 오버레이 위에 표시 */
+  /* 오버레이(30)보다 확실히 위에 표시되도록 100으로 유지 */
 }
 
-/* 사이드바가 열려있을 때(aria-expanded="true") 햄버거 버튼 숨김 */
+/* 사이드바가 열려있을 때(aria-expanded="true") 햄버거 버튼 처리 */
+/* ─────────────────────────────────────────────────────────────────
+   display: none     → 공간째로 없어짐 → 레이아웃 재계산 → 화면 덜컥거림 발생
+   visibility: hidden → 눈에만 안 보임 → 공간(높이)은 그대로 → 덜컥거림 없음 ✅
+   ───────────────────────────────────────────────────────────────── */
 .header__hamburger[aria-expanded="true"] {
-  display: none;
+  visibility: hidden;
+  /* 물리적 레이아웃 공간은 유지하면서 눈에만 안 보이게 처리 */
 }
 
 
@@ -238,7 +255,7 @@ body {
   /* Flexbox: 메뉴 목록과 로그인 버튼을 세로로 쌓기 */
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-500);
+  /* gap: var(--spacing-500); -> 삭제됨. 요소 사이의 간격을 gap이 아닌 직접 제어로 변경 */
 
   /* 초기 상태: 화면 오른쪽 바깥으로 숨겨둠 */
   transform: translateX(100%);
@@ -256,14 +273,25 @@ body {
 
 /* 사이드바 내부 X 닫기 버튼 (모바일 전용) */
 .nav__close {
-  display: flex; /* 모바일: 보임 */
+  display: flex;
+  /* 모바일: 보임 */
   align-self: flex-end;
   /* 버튼을 오른쪽 끝에 배치 */
-  padding: var(--spacing-100);
-  /* 충분한 클릭 영역 확보 */
-  margin-bottom: var(--spacing-200);
-  /* 아래 메뉴 목록과의 간격 */
+  width: 24px;
+  /* 버튼 너비 24px */
+  height: 24px;
+  /* 버튼 높이 24px */
+  padding: 0;
+  /* 패딩 제거 */
+  margin-bottom: var(--spacing-400);
+  /* 아래 메뉴 목록과의 간격 32px 적용 */
   color: var(--color-gray-950);
+}
+
+/* 닫기 버튼 내부 아이콘 크기 제어 */
+.nav__close img {
+  width: 24px;
+  height: 24px;
 }
 
 /* 메뉴 목록: 세로로 나열 */
@@ -271,6 +299,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-200);
+  margin-bottom: var(--spacing-400);
+  /* 하단 여백 32px (spacing-400) 적용 */
 }
 
 /* 드롭다운을 포함한 메뉴 아이템: 상대 위치를 기준으로 드롭다운 배치 */
@@ -282,10 +312,12 @@ body {
 .nav__btn {
   display: flex;
   align-items: center;
-  gap: var(--spacing-100);
+  /* 상하 가운데 정렬 */
+  gap: var(--spacing-200);
+  /* 요소 간 간격 16px 적용 */
   color: var(--color-gray-500);
-  font-size: 18px;
-  /* 모바일 사이드바: Preset 4 Medium (18px) 적용 */
+  font-size: 16px;
+  /* 모바일 사이드바: Preset 5 Medium (16px) 적용 */
   font-weight: var(--font-weight-medium);
   transition: color var(--transition-base);
   width: 100%;
@@ -301,8 +333,8 @@ body {
 .nav__link {
   display: block;
   color: var(--color-gray-500);
-  font-size: 18px;
-  /* 모바일 사이드바: Preset 4 Medium (18px) 적용 */
+  font-size: 16px;
+  /* 모바일 사이드바: Preset 5 Medium (16px) 적용 */
   font-weight: var(--font-weight-medium);
   transition: color var(--transition-base);
 }
@@ -335,6 +367,30 @@ body {
   /* Login 텍스트 가운데 정렬 */
 }
 
+/* 인증 버튼 특정 스타일: Preset 6 Medium 적용 */
+#btn-login {
+  font-size: 14px;
+  /* Preset 6 크기 */
+  font-weight: var(--font-weight-medium);
+  /* 중간 굵기 (500) */
+  line-height: 1.15;
+  /* 행간 115% */
+  padding: 0;
+  /* 패딩 제거 */
+}
+
+#btn-register {
+  /* Preset 6 Medium 적용 */
+  font-size: 14px;
+  /* 글자 크기: 14px */
+  font-weight: var(--font-weight-medium);
+  /* 글자 굵기: Medium (500) */
+  line-height: 1.15;
+  /* 행간: 115% */
+  letter-spacing: 0px;
+  /* 자간: 0px */
+}
+
 
 /* -------------------------------------------------------------------
    7. DROPDOWN 컴포넌트
@@ -359,6 +415,12 @@ body {
   max-height: 300px;
   /* 충분히 큰 값으로 설정 (실제 높이는 내용에 맞춰짐) */
   padding: var(--spacing-200) 0 var(--spacing-100) var(--spacing-300);
+}
+
+/* 드롭다운 특정 스타일: 하단 여백 제거 (Features, Company) */
+#dropdown-features.dropdown--open,
+#dropdown-company.dropdown--open {
+  padding-bottom: 0;
 }
 
 /* 드롭다운 내 링크 */
@@ -393,7 +455,8 @@ body {
   position: fixed;
   inset: 0;
   /* top, right, bottom, left 모두 0 */
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(21, 21, 21, 0.75);
+  /* Gray 950(#151515) 컬러에 75% 불투명도 적용 */
 
   /* 초기: 숨김 */
   opacity: 0;
@@ -470,7 +533,7 @@ body {
   /* 자간 0px (Preset 5 Medium 기준) */
   color: var(--color-gray-500);
   /* 보조 텍스트 색상 */
-  max-width: 340px;
+  /* max-width: 340px; */
   /* 최대 너비 제한으로 가독성 확보 */
 }
 
@@ -557,6 +620,102 @@ body {
    📱 → 🖥️  미디어 쿼리 (Media Queries)
    모바일 기본 → 데스크톱에서 달라지는 부분만 덮어씁니다.
    =================================================================== */
+
+/* ------------------------------------------------------------------
+   태블릿 레이아웃 (768px 이상)
+   ------------------------------------------------------------------ */
+@media (min-width: 768px) {
+
+  /* ── HEADER: 태블릿 패딩 적용 ── */
+  .header {
+    /* 상단 24px, 좌우 40px, 하단 32px 적용 (var 변수 활용) */
+    padding: var(--spacing-300) var(--spacing-500) var(--spacing-400);
+  }
+
+  /* ── NAV: 태블릿 사이드바 스타일 고정 ── */
+  #main-nav {
+    width: 283px;
+    /* 태블릿 사이드바 너비 283px 고정 */
+    /* 상단 32px, 우측 0, 하단 0, 좌측 48px 패딩 적용 */
+    padding: var(--spacing-400) 40px 0 var(--spacing-600);
+  }
+
+  /* ── HERO 콘텐츠: 태블릿 스타일 적용 ── */
+  .hero__content {
+    /* 상단 64px 적용, 내부 요소 간격 32px, 하단 여백 52px 적용 */
+    padding: var(--spacing-800) 0 0;
+    gap: var(--spacing-400);
+    margin-bottom: 52px;
+    /* 하단 여백 52px 적용 */
+  }
+
+  /* ── HERO 제목: 태블릿 Preset 2 Bold 적용 ── */
+  #hero-title {
+    font-size: 64px;
+    /* Preset 2 크기 */
+    font-weight: var(--font-weight-bold);
+    /* Bold (700) */
+    line-height: 1;
+    /* 행간 100% */
+    letter-spacing: -1px;
+    /* 자간 -1px */
+  }
+
+  /* ── HERO 설명: 태블릿 Preset 4 Medium 적용 ── */
+  .hero__desc {
+    font-size: 18px;
+    /* Preset 4 크기 */
+    font-weight: var(--font-weight-medium);
+    /* Medium (500) */
+    line-height: 1.55;
+    /* 행간 155% */
+    letter-spacing: 0px;
+    /* 자간 0px */
+    width: 552px;
+    /* 너비 552px 고정 */
+    margin-inline: auto;
+    /* 중앙 정렬 유지 */
+  }
+
+  /* ── HERO CTA 버튼: 태블릿 스타일 적용 ── */
+  #btn-learn-more {
+    width: 163px;
+    /* 너비 163px */
+    height: 56px;
+    /* 높이 56px */
+    font-size: 18px;
+    /* Preset 4 크기 */
+    font-weight: var(--font-weight-bold);
+    /* Bold (700) */
+    line-height: 1.55;
+    /* 행간 155% */
+    letter-spacing: -0.25px;
+    /* 자간 -0.25px */
+    padding: 0;
+    /* 고정 크기이므로 패딩 초기화 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── HERO 파트너 로고: 태블릿 스타일 적용 ── */
+  .hero__clients {
+    /* 좌우 패딩 45.54px, 로고 간 간격 56px 적용 */
+    padding-left: 45.54px;
+    padding-right: 45.54px;
+    gap: 56px;
+  }
+
+  /* 개별 로고 크기 조정 */
+  .hero__client-logo {
+    /* 모바일에서 설정된 제한(max-height: 26px, width: auto)을 풀고 원래 비율대로 커지도록 허용 */
+    max-height: max-content;
+    width: 100%;
+    height: auto;
+    max-height: 51px;
+    object-fit: contain;
+  }
+}
 
 /* ------------------------------------------------------------------
    데스크톱 레이아웃 (1024px 이상)

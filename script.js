@@ -87,8 +87,21 @@ dropdownBtns.forEach((btn) => {
     /* 현재 버튼이 열려있는지 확인 */
     const isExpanded = btn.getAttribute('aria-expanded') === 'true';
 
-    /* 현재 열려있는 버튼이 아닌 나머지 드롭다운은 모두 닫기 */
-    closeAllDropdowns(btn);
+    /* ─────────────────────────────────────────────────────────────────
+       핵심 분기 처리:
+       - 데스크톱(1024px 이상): 한 번에 하나의 드롭다운만 열림
+         → 새 버튼 클릭 시 나머지 드롭다운 모두 닫기
+       - 모바일/태블릿(1024px 미만, 사이드바 사용 환경):
+         → 여러 드롭다운을 동시에 열 수 있음 (아코디언 해제)
+         → closeAllDropdowns를 호출하지 않음
+       ───────────────────────────────────────────────────────────────── */
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
+    if (isDesktop) {
+      /* 데스크톱: 현재 버튼 제외한 나머지 드롭다운 모두 닫기 */
+      closeAllDropdowns(btn);
+    }
+    /* 모바일/태블릿: 이 블록을 건너뜀 → 다른 드롭다운 유지 */
 
     /* 현재 버튼의 드롭다운 id로 해당 드롭다운 찾기 */
     const dropdownId = btn.getAttribute('aria-controls');
