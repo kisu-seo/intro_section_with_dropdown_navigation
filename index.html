@@ -12,9 +12,6 @@
   <meta name="description"
     content="Get your team in sync, no matter your location. Streamline processes, create team rituals, and watch productivity soar." />
 
-  <!-- 파비콘(브라우저 탭 아이콘) -->
-  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png" />
-
   <!-- Google Fonts: Epilogue (Medium 500, Bold 700) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -33,14 +30,16 @@
 
     <!-- 로고 -->
     <a href="/" class="header__logo" aria-label="Snap 홈으로 이동">
-      <img src="./images/logo.svg" alt="Snap 로고" width="84" height="27" />
+      <!-- alt="Snap": 로고 이미지임을 간결하게 전달 (브랜드명만으로 충분) -->
+      <img src="./images/logo.svg" alt="Snap" width="84" height="27" />
     </a>
 
     <!-- 메인 내비게이션 (데스크톱: 가로 배치 / 모바일: 사이드바) -->
     <nav class="nav" id="main-nav" aria-label="메인 내비게이션">
 
       <!-- 사이드바 닫기 버튼 (모바일에서만 보임: X 아이콘) -->
-      <!-- aria-label: 스크린 리더에게 "메뉴 닫기" 라고 읽어줌 -->
+      <!-- [접근성 의도] X 모양 아이콘(이미지)뿐이라면, 스크린 리더는 이 버튼이 무슨 버튼인지 읽을 수 없습니다.
+           `aria-label="메뉴 닫기"`를 넣어주면 화면에는 안 보이지만 기계에게 명확한 이름을 제공하게 됩니다. -->
       <button class="nav__close" id="btn-nav-close" aria-label="메뉴 닫기">
         <img src="./images/icon-close-menu.svg" alt="" aria-hidden="true" width="26" height="26" />
       </button>
@@ -48,19 +47,21 @@
       <ul class="nav__list" role="list">
 
         <!-- Features 메뉴 (드롭다운 있음) -->
+        <!-- [접근성(A11y) 핵심 속성 설명]
+             - aria-expanded: 화면을 볼 수 없는 분들이 스크린 리더기를 사용할 때, 이 메뉴가 현재 '펼쳐졌는지' 혹은 '접혔는지'를 음성으로 알려주는 안내판 역할을 합니다.
+             - aria-haspopup: 이 버튼이 단순한 링크가 아니라, 누르면 하위에 '서브 메뉴(팝업)'가 열릴 것이라고 기계에게 미리 귀띔해줍니다.
+             - aria-controls: 여러 메뉴 중에 어떤 하위 서랍(id)을 켜고 꺼야 하는지 서로 논리적인 다리(Link)를 연결해주는 표지판입니다. -->
         <li class="nav__item nav__item--dropdown">
-          <!-- aria-expanded: 스크린 리더에게 드롭다운 열림/닫힘 상태를 알려줌 -->
-          <!-- aria-haspopup: 이 버튼이 팝업 메뉴를 가지고 있음을 알림 -->
           <button class="nav__btn" id="btn-features" aria-expanded="false" aria-haspopup="true"
             aria-controls="dropdown-features">
             Features
-            <!-- 화살표 아이콘: 드롭다운 열림 상태에 따라 회전 -->
+            <!-- [접근성 의도] 화살표 이미지는 단순히 펼쳐졌다는 걸 눈으로 보여주는 시각적 장식일 뿐입니다. 기계가 "메뉴 활성" 이라고 읽을 때 굳이 "이미지"라고 같이 읽지 않도록 `aria-hidden="true"`로 숨겨줍니다. -->
             <img class="nav__arrow" src="./images/icon-arrow-down.svg" alt="" aria-hidden="true" width="10"
               height="6" />
           </button>
 
           <!-- Features 드롭다운 콘텐츠 -->
-          <ul class="dropdown" id="dropdown-features" role="list" aria-label="Features 하위 메뉴">
+          <ul class="dropdown dropdown--features" id="dropdown-features" role="list" aria-label="Features 하위 메뉴">
             <li class="dropdown__item">
               <a href="#" class="dropdown__link">
                 <img src="./images/icon-todo.svg" alt="" aria-hidden="true" class="dropdown__icon" />
@@ -98,7 +99,8 @@
           </button>
 
           <!-- Company 드롭다운 콘텐츠 (아이콘 없음) -->
-          <ul class="dropdown dropdown--right" id="dropdown-company" role="list" aria-label="Company 하위 메뉴">
+          <ul class="dropdown dropdown--right dropdown--company" id="dropdown-company" role="list"
+            aria-label="Company 하위 메뉴">
             <li class="dropdown__item">
               <a href="#" class="dropdown__link">History</a>
             </li>
@@ -124,13 +126,13 @@
 
       <!-- 오른쪽: 로그인/회원가입 버튼 -->
       <div class="nav__auth">
-        <a href="#" class="btn btn--ghost" id="btn-login">Login</a>
-        <a href="#" class="btn btn--outline" id="btn-register">Register</a>
+        <a href="#" class="btn btn--ghost nav__btn-login">Login</a>
+        <a href="#" class="btn btn--outline nav__btn-register">Register</a>
       </div>
     </nav>
 
     <!-- 햄버거 버튼 (모바일에서만 보임) -->
-    <!-- aria-label: 스크린 리더가 "메뉴 열기" 라고 읽어줌 -->
+    <!-- [접근성 의도] 이미지만 존재하는 버튼이므로 시각장애인 분들을 위한 `aria-label`로 숨은 이름(텍스트)을 달아주어 길잡이가 되게 합니다. -->
     <button class="header__hamburger" id="btn-hamburger" aria-label="메뉴 열기" aria-expanded="false"
       aria-controls="main-nav">
       <img src="./images/icon-menu.svg" alt="" aria-hidden="true" width="32" height="18" />
@@ -146,29 +148,34 @@
   <!-- =====================================================
        MAIN: 히어로 섹션
        ===================================================== -->
-  <main class="main" id="main-content">
+  <main class="main main--hero-page">
     <section class="hero" aria-labelledby="hero-title">
 
       <!-- 히어로 이미지 (모바일: 상단 / 데스크톱: 우측) -->
+      <!-- [의도: 왜 <img> 단독 대신 <picture> 태그를 사용했는가?]
+           1) 구도 변경(Art Direction): 모바일용(가로형)과 데스크톱용(세로형) 이미지의 단순 크기를 넘어 비율/화각 자체가 다릅니다. 디자인 의도를 정확히 맞추기 위함입니다.
+           2) 성능 최적화: CSS 단에서 display:none으로 두 이미지를 숨기고 보여준다면 사용자는 불필요하게 이미지 두 장을 전부 다운로드해야 합니다(데이터 낭비).
+           <picture>와 <source>를 사용하면 브라우저가 접속한 기기 화면 크기를 먼저 파악해서 알맞은 최적의 이미지만 똑똑하게 하나 다운로드합니다. -->
       <div class="hero__image-wrap">
-        <!-- srcset: 화면 크기에 따라 적절한 이미지를 자동 선택 -->
         <picture>
           <source media="(min-width: 1024px)" srcset="./images/image-hero-desktop.png" />
-          <img src="./images/image-hero-mobile.png" alt="노트북을 들고 있는 사람" class="hero__image" width="375" height="300" />
+          <img src="./images/image-hero-mobile.png" alt="Work from anywhere" class="hero__image" width="375"
+            height="300" />
         </picture>
       </div>
 
       <!-- 히어로 텍스트 콘텐츠 -->
       <div class="hero__content">
         <!-- h1: 페이지 내 가장 중요한 제목, 한 페이지에 하나만 -->
-        <h1 class="hero__title" id="hero-title">Make <br class="hero__br--desktop" />remote work</h1>
+        <!-- <br> 제거: CSS의 max-width로 줄바꿈을 자연스럽게 제어 -->
+        <h1 class="hero__title" id="hero-title">Make remote work</h1>
 
         <p class="hero__desc">
           Get your team in sync, no matter your location.
           Streamline processes, create team rituals, and watch productivity soar.
         </p>
 
-        <a href="#" class="btn btn--primary hero__cta" id="btn-learn-more">
+        <a href="#" class="btn btn--primary hero__cta">
           Learn more
         </a>
 

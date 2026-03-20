@@ -1,104 +1,82 @@
-# Frontend Mentor - Intro section with dropdown navigation
+# Intro Section with Dropdown Navigation
 
-![Design preview for the Intro section with dropdown navigation coding challenge](preview.jpg)
+## Table of contents
 
-## Welcome! 👋
+- [Overview](#overview)
+  - [Screenshot](#screenshot)
+  - [Links](#links)
+- [My process](#my-process)
+  - [Built with](#built-with)
+- [Author](#author)
 
-Thanks for checking out this front-end coding challenge.
+## Overview
 
-[Frontend Mentor](https://www.frontendmentor.io) challenges help you improve your coding skills by building realistic projects.
+### Screenshot
 
-**To do this challenge, you need a basic understanding of HTML, CSS and JavaScript.**
+![Project Screenshot](./intro_section_with_dropdown_navigation.png)
 
-## The challenge
+### Links
 
-Your challenge is to build out this intro section with dropdown navigation and get it looking as close to the design as possible.
+- Solution URL: [Solution URL](https://github.com/kisu-seo/intro_section_with_dropdown_navigation)
+- Live Site URL: [Live URL](https://kisu-seo.github.io/intro_section_with_dropdown_navigation/)
 
-You can use any tools you like to help you complete the challenge. So if you've got something you'd like to practice, feel free to give it a go.
+## My process
 
-Your users should be able to:
+### Built with
 
-- View the relevant dropdown menus on desktop and mobile when interacting with the navigation links
-- View the optimal layout for the content depending on their device's screen size
-- See hover states for all interactive elements on the page
+- **Semantic HTML5 Markup** — Page structure is built with semantic elements: `<header>`, `<nav>`, `<main>`, `<section>`, and `<ul>/<li>` for nested navigation lists. The navigation hierarchy explicitly mirrors the logical parent-child relationship between menu items and their dropdowns. No `<div>` is used where a semantic element is more appropriate.
 
-Want some support on the challenge? [Join our community](https://www.frontendmentor.io/community) and ask questions in the **#help** channel.
+- **Web Accessibility (ARIA)** — Full keyboard and screen reader support throughout:
+  - `aria-expanded="false/true"` on each dropdown toggle button — dynamically updated by JavaScript to announce the open/closed state to screen readers.
+  - `aria-haspopup="true"` on dropdown buttons to signal that a sub-menu will appear on activation.
+  - `aria-controls` links each toggle button to its corresponding dropdown list by `id`, establishing a programmatic association.
+  - `aria-hidden="true"` on all decorative images (arrow icons, hamburger icon) prevents redundant announcements.
+  - `aria-label` on icon-only buttons (`hamburger`, `close`) provides a visible-less accessible name.
+  - `aria-labelledby` on `<section class="hero">` points to the `<h1>` id, giving the landmark a descriptive name for screen reader navigation.
+  - `role="list"` on `<ul>` elements re-asserts list semantics that may be stripped by some browsers when `list-style: none` is applied.
 
-## Where to find everything
+- **CSS Custom Properties (Design Tokens)** — All design values are declared in `:root` as the single source of truth, organized by concern:
+  - **Color**: `--color-white`, `--color-black`, `--color-gray-950/500/400/200/50`, plus accent colors `--color-blue-400`, `--color-violet-500`, etc.
+  - **Typography**: `--font-family`, `--font-weight-medium` (500), `--font-weight-bold` (700)
+  - **Spacing (8px grid system)**: `--spacing-100` (8px) through `--spacing-900` (72px)
+  - **Component tokens**: `--border-radius-sm` (8px), `--border-radius-md` (14px), `--transition-base` (0.25s ease)
 
-Your task is to build out the project to the designs inside the `/design` folder. You will find both a mobile and a desktop version of the design.
+- **Mobile-First Responsive Design (2 Breakpoints)** — Base styles target mobile (sidebar navigation). Two `min-width` media queries progressively enhance the layout:
+  - **768px (Tablet)**: Sidebar width becomes `283px` fixed, header and hero content padding scales up.
+  - **1024px (Desktop)**: Navigation switches from `position: fixed` sidebar to an inline horizontal `position: static` bar. Hero layout shifts from vertical stack to horizontal `flex-direction: row` with `order: -1` to visually place text left without changing HTML source order.
 
-The designs are in JPG static format. Using JPGs will mean that you'll need to use your best judgment for styles such as `font-size`, `padding` and `margin`.
+- **CSS Flexbox** — The primary layout mechanism used throughout. Key applications:
+  - `.header`: `justify-content: space-between` to push logo and hamburger to opposing ends.
+  - `.nav` (desktop): `flex: 1` + `justify-content: space-between` to distribute menu links and auth buttons across the full remaining header width.
+  - `.hero`: `flex-direction: column` (mobile) → `row` (desktop) with `justify-content: space-between` to split content and image.
+  - `.nav__auth`: `flex-direction: column` (mobile, full-width buttons) → `row` (desktop, inline buttons).
 
-If you would like the Figma design file to inspect the design in more detail, you can [subscribe as a PRO member](https://www.frontendmentor.io/pro).
+- **CSS Transition & Transform for UI Interactions** — All interactive state changes are handled with CSS rather than JS style mutations:
+  - Mobile sidebar slides in via `transform: translateX(100%)` → `translateX(0)` toggled by adding `.nav--open` class.
+  - Dropdown arrow icon flips 180° via `.nav__btn[aria-expanded="true"] .nav__arrow { transform: rotate(180deg); }` with a `transition`.
+  - Overlay fades in via `opacity` + `visibility` transition — `visibility: hidden` (not `display: none`) ensures pointer events are blocked without Layout Shift.
 
-You will find all the required assets in the `/images` folder. The assets are already optimized.
+- **Stacking Context (z-index Architecture)** — The layering is carefully designed to avoid Stacking Context traps:
+  - `.overlay`: `z-index: 30` — dims the background behind the sidebar.
+  - `.nav` (sidebar): `z-index: 50` — sits above the overlay.
+  - `.header__hamburger`: `z-index: 100` — always on top to remain clickable.
+  - `.header` intentionally has **no** `z-index` assigned to prevent creating a Stacking Context that would trap `.nav` below the overlay.
 
-There is also a `style-guide.md` file containing the information you'll need, such as color palette and fonts.
+- **Responsive Image with `<picture>` (Art Direction)** — The hero image uses `<picture>` + `<source media="(min-width: 1024px)">` instead of a single `<img>`. This serves a fundamentally different image composition (portrait crop for desktop, landscape for mobile) and ensures only one appropriately-sized image is downloaded per viewport, eliminating wasted bandwidth.
 
-## Using AI coding assistants
+- **Vanilla JavaScript — Event Delegation Pattern** — Instead of attaching individual `click` listeners to each dropdown button, a single listener is registered on the parent `.nav__list`. The handler uses `event.target.closest()` to identify whether a dropdown button was clicked. This reduces memory usage and automatically handles any dynamically added menu items in the future.
 
-We've included two files to help you if you're using AI coding assistants (like Claude, GitHub Copilot, Cursor, etc.) while working on this challenge:
+- **Vanilla JavaScript — Debounce on Resize** — A `setTimeout` / `clearTimeout` debounce is applied to the `window resize` event. During resizing, a `resize-animation-stopper` class is added to `body`, which uses `!important` to disable all `transition` and `animation` properties globally, preventing the sidebar's slide animation from firing as a visual glitch when crossing the `1024px` breakpoint.
 
-- `AGENTS.md` - Contains detailed instructions for AI assistants on how to help you with this challenge. It's tailored to this challenge's difficulty level, so the AI will provide guidance appropriate to your learning stage—offering more support for beginner challenges and encouraging more independence on advanced ones.
-- `CLAUDE.md` - A pointer file that directs Claude-based tools to the AGENTS.md instructions.
+- **`window.matchMedia` for JS/CSS Sync** — Rather than reading `window.innerWidth` inside the resize handler (which fires hundreds of times per second), `window.matchMedia('(min-width: 1024px)')` is used with a `change` event listener. This fires exactly once when the breakpoint threshold is crossed, and keeps the JS breakpoint constant (`BREAKPOINT_DESKTOP = 1024`) in sync with the CSS media query.
 
-**How to use them:** You don't need to do anything! These files are automatically detected by most AI coding tools. The AI will read them and adjust its behavior to be a better learning partner—guiding you toward solutions rather than just giving you the answers.
+- **Keyboard Accessibility (ESC Key)** — A `keydown` event listener on `document` closes all open dropdowns and the mobile sidebar when the `Escape` key is pressed, following ARIA Authoring Practices Guide patterns for dismissible overlays.
 
-**Note:** These files are designed to help you *learn*, not to do the work for you. The AI is instructed to ask questions, give hints, and explain concepts rather than writing complete solutions.
+- **Google Fonts via `<link rel="preconnect">`** — The `Epilogue` font (weights 500, 700) is loaded from Google Fonts. Two `<link rel="preconnect">` tags pre-warm the DNS + TCP + TLS handshake to `fonts.googleapis.com` and `fonts.gstatic.com` before the font request is made, reducing perceived load latency.
 
-## Building your project
+- **JSDoc Documentation** — All JavaScript functions and constants are annotated with JSDoc block comments (`/** ... */`) specifying `@param`, `@returns`, `@type`, and `@constant` tags, along with `[영향도]` (impact) notes explaining what breaks if a constant value is changed. This enables IDE IntelliSense hover hints and serves as inline API documentation.
 
-Feel free to use any workflow that you feel comfortable with. Below is a suggested process, but do not feel like you need to follow these steps:
+## Author
 
-1. Initialize your project as a public repository on [GitHub](https://github.com/). Creating a repo will make it easier to share your code with the community if you need help. If you're not sure how to do this, [have a read-through of this Try Git resource](https://try.github.io/).
-2. Configure your repository to publish your code to a web address. This will also be useful if you need some help during a challenge as you can share the URL for your project with your repo URL. There are a number of ways to do this, and we provide some recommendations below.
-3. Look through the designs to start planning out how you'll tackle the project. This step is crucial to help you think ahead for CSS classes to create reusable styles.
-4. Before adding any styles, structure your content with HTML. Writing your HTML first can help focus your attention on creating well-structured content.
-5. Write out the base styles for your project, including general content styles, such as `font-family` and `font-size`.
-6. Start adding styles to the top of the page and work down. Only move on to the next section once you're happy you've completed the area you're working on.
-
-## Deploying your project
-
-As mentioned above, there are many ways to host your project for free. Our recommended hosts are:
-
-- [GitHub Pages](https://pages.github.com/)
-- [Vercel](https://vercel.com/)
-- [Netlify](https://www.netlify.com/)
-
-You can host your site using one of these solutions or any of our other trusted providers. [Read more about our recommended and trusted hosts](https://medium.com/frontend-mentor/frontend-mentor-trusted-hosting-providers-bf000dfebe).
-
-## Create a custom `README.md`
-
-We strongly recommend overwriting this `README.md` with a custom one. We've provided a template inside the [`README-template.md`](./README-template.md) file in this starter code.
-
-The template provides a guide for what to add. A custom `README` will help you explain your project and reflect on your learnings. Please feel free to edit our template as much as you like.
-
-Once you've added your information to the template, delete this file and rename the `README-template.md` file to `README.md`. That will make it show up as your repository's README file.
-
-## Submitting your solution
-
-Submit your solution on the platform for the rest of the community to see. Follow our ["Complete guide to submitting solutions"](https://medium.com/frontend-mentor/a-complete-guide-to-submitting-solutions-on-frontend-mentor-ac6384162248) for tips on how to do this.
-
-Remember, if you're looking for feedback on your solution, be sure to ask questions when submitting it. The more specific and detailed you are with your questions, the higher the chance you'll get valuable feedback from the community.
-
-## Sharing your solution
-
-There are multiple places you can share your solution:
-
-1. Share your solution page in the **#finished-projects** channel of the [community](https://www.frontendmentor.io/community).
-2. Tweet [@frontendmentor](https://twitter.com/frontendmentor) and mention **@frontendmentor**, including the repo and live URLs in the tweet. We'd love to take a look at what you've built and help share it around.
-3. Share your solution on other social channels like LinkedIn.
-4. Blog about your experience building your project. Writing about your workflow, technical choices, and talking through your code is a brilliant way to reinforce what you've learned. Great platforms to write on are [dev.to](https://dev.to/), [Hashnode](https://hashnode.com/), and [CodeNewbie](https://community.codenewbie.org/).
-
-We provide templates to help you share your solution once you've submitted it on the platform. Please do edit them and include specific questions when you're looking for feedback.
-
-The more specific you are with your questions the more likely it is that another member of the community will give you feedback.
-
-## Got feedback for us?
-
-We love receiving feedback! We're always looking to improve our challenges and our platform. So if you have anything you'd like to mention, please email hi@frontendmentor.io.
-
-This challenge is completely free. Please share it with anyone who will find it useful for practice.
-
-**Have fun building!** 🚀
+- Website - [Kisu Seo](https://github.com/kisu-seo)
+- Frontend Mentor - [@kisu-seo](https://www.frontendmentor.io/profile/kisu-seo)
